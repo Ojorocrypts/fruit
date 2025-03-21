@@ -1,0 +1,42 @@
+{
+  "name": "tilingshell",
+  "version": "16.2",
+  "author": "Domenico Ferraro <ferraro.domenico125@gmail.com>",
+  "private": true,
+  "license": "GPL v2.0",
+  "scripts": {
+    "build": "npm run clean && node esbuild.mjs && npm run build:schema",
+    "clean": "rm -rf dist; rm -rf dist_legacy",
+    "update-translations": "npm run create:translations && npm run merge:translations && npm run build:translations",
+    "build:schema": "npm run clean:schema && glib-compile-schemas ./resources/schemas --targetdir=./dist/schemas/ && cp ./dist/schemas/ ./dist_legacy/ -r",
+    "clean:schema": "rm -rf ./dist/schemas/*.compiled; rm -rf ./dist_legacy/schemas/*.compiled",
+    "build:package": "npm run clean:package; npm run build && cd ./dist && zip -qr ../tilingshell@ferrarodomenico.com.zip * && cd ../dist_legacy && zip -qr ../GNOME.42-44.tilingshell@ferrarodomenico.com.zip *",
+    "clean:package": "rm -rf './dist/tilingshell@ferrarodomenico.com.zip'; rm -rf './dist_legacy/tilingshell@ferrarodomenico.com.zip'",
+    "install:extension": "mkdir -p ~/.local/share/gnome-shell/extensions/tilingshell@ferrarodomenico.com && cp ./dist$([ $(gnome-shell --version | grep -o -E '[0-9]+' | head -n 1) -le 44 ] && echo '_legacy')/* ~/.local/share/gnome-shell/extensions/tilingshell@ferrarodomenico.com/ -r",
+    "wayland-session": "dbus-run-session -- env MUTTER_DEBUG_NUM_DUMMY_MONITORS=1 MUTTER_DEBUG_DUMMY_MODE_SPECS=1920x1080 gnome-shell --nested --wayland",
+    "dev:wayland": "npm run build && npm run install:extension && npm run wayland-session",
+    "build:translations": "for file in $(ls translations/*.po); do mkdir -p resources/locale/$(basename $file .po)/LC_MESSAGES; msgfmt -c $file -o resources/locale/$(basename $file .po)/LC_MESSAGES/tilingshell.mo; done",
+    "create:translations": "xgettext --from-code=UTF-8 --output=translations/tilingshell@ferrarodomenico.com.pot -j --language=javascript --force-po dist/prefs.js dist/extension.js",
+    "merge:translations": "for file in $(ls translations/*.po); do msgmerge -U $file translations/tilingshell@ferrarodomenico.com.pot --backup=none; done",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prettier:check": "prettier --check \"**/*.{ts,scss}\"",
+    "prettier:fix": "prettier --write \"**/*.{ts,scss}\""
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.2",
+    "esbuild-sass-plugin": "^3.2.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "glob": "^10.3.12",
+    "globals": "^15.8.0",
+    "prettier": "^3.3.2",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.15.0"
+  },
+  "dependencies": {
+    "@girs/gjs": "^3.3.0",
+    "@girs/gnome-shell": "^46.0.0-beta6"
+  }
+}

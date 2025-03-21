@@ -1,0 +1,23 @@
+{
+  "name": "Tiling Shell",
+  "description": "Extend Gnome Shell with advanced tiling window management. Supports multiple monitors, Windows 11 Snap Assistant, Fancy Zones, automatic tiling, keyboard shortcuts, customised tiling layouts and more!",
+  "uuid": "tilingshell@ferrarodomenico.com",
+  "shell-version": [
+    "42",
+    "43",
+    "44",
+    "45",
+    "46",
+    "47",
+    "48"
+  ],
+  "version": 99,
+  "version-name": "16.2",
+  "url": "https://github.com/domferr/tilingshell",
+  "settings-schema": "org.gnome.shell.extensions.tilingshell",
+  "gettext-domain": "tilingshell",
+  "donations": {
+    "kofi": "domferr",
+    "patreon": "domferr"
+  }
+}
