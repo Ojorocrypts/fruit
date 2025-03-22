@@ -43,7 +43,7 @@ export default class Indicator extends PanelMenu.Button {
             Gio.SettingsBindFlags.GET,
         );
 
-        const icon = new St.Icon({
+        let icon = new St.Icon({
             gicon: Gio.icon_new_for_string(
                 `${path}/icons/indicator-symbolic.svg`,
             ),
@@ -83,7 +83,7 @@ export default class Indicator extends PanelMenu.Button {
 
     public selectLayoutOnClick(monitorIndex: number, layoutToSelectId: string) {
         // get the currently selected layouts
-        const selected = Settings.get_selected_layouts();
+        let selected = Settings.get_selected_layouts();
         // select the layout for the given monitor
         selected[global.workspaceManager.get_active_workspace_index()][
             monitorIndex
@@ -93,18 +93,18 @@ export default class Indicator extends PanelMenu.Button {
         // it must follow the layout of the second-last workspace
         // if we changed the second-last workspace we take care of changing
         // the last workspace as well, if there aren't tiled windows (is empty)
-        const n_workspaces = global.workspaceManager.get_n_workspaces();
+        let n_workspaces = global.workspaceManager.get_n_workspaces();
         if (
             global.workspaceManager.get_active_workspace_index() ===
             n_workspaces - 2
         ) {
-            const lastWs = global.workspaceManager.get_workspace_by_index(
+            let lastWs = global.workspaceManager.get_workspace_by_index(
                 n_workspaces - 1,
             );
             if (!lastWs) return;
 
             // check if there are tiled windows on that monitor and in the last workspace
-            const tiledWindows = getWindows(lastWs).find(
+            let tiledWindows = getWindows(lastWs).find(
                 (win) =>
                     (win as ExtendedWindow).assignedTile &&
                     win.get_monitor() === monitorIndex,
@@ -123,7 +123,7 @@ export default class Indicator extends PanelMenu.Button {
     public newLayoutOnClick(showLegendOnly: boolean) {
         this.menu.close(true);
 
-        const newLayout = new Layout(
+        let newLayout = new Layout(
             [
                 new Tile({ x: 0, y: 0, width: 0.3, height: 1, groups: [1] }),
                 new Tile({ x: 0.3, y: 0, width: 0.7, height: 1, groups: [1] }),
@@ -162,7 +162,7 @@ export default class Indicator extends PanelMenu.Button {
                     this.cancelLayoutOnClick();
             },
             onSelectLayout: (ind: number, lay: Layout) => {
-                const layCopy = new Layout(
+                let layCopy = new Layout(
                     lay.tiles.map(
                         (t) =>
                             new Tile({
@@ -210,7 +210,7 @@ export default class Indicator extends PanelMenu.Button {
             this._state === IndicatorState.DEFAULT
         )
             return;
-        const newLayout = this._layoutEditor.layout;
+        let newLayout = this._layoutEditor.layout;
 
         if (this._state === IndicatorState.CREATE_NEW)
             GlobalState.get().addLayout(newLayout);
@@ -261,7 +261,7 @@ export default class Indicator extends PanelMenu.Button {
                 this._keyPressEvent = global.stage.connect_after(
                     'key-press-event',
                     (_, event) => {
-                        const symbol = event.get_key_symbol();
+                        let symbol = event.get_key_symbol();
                         if (symbol === Clutter.KEY_Escape)
                             this.cancelLayoutOnClick();
 
