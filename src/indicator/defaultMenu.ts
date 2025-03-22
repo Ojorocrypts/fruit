@@ -22,7 +22,7 @@ import Layout from '@components/layout/Layout';
 import { _ } from '../translations';
 import { openPrefs } from '@polyfill';
 
-const debug = logger('DefaultMenu');
+let debug = logger('DefaultMenu');
 
 @registerGObjectClass
 class LayoutsRow extends St.BoxLayout {
@@ -73,14 +73,14 @@ class LayoutsRow extends St.BoxLayout {
 
         parent.add_child(this);
 
-        const selectedIndex = layouts.findIndex((lay) => lay.id === selectedId);
-        const hasGaps = Settings.get_inner_gaps(1).top > 0;
+        let selectedIndex = layouts.findIndex((lay) => lay.id === selectedId);
+        let hasGaps = Settings.get_inner_gaps(1).top > 0;
 
-        const layoutHeight: number = 36;
-        const layoutWidth: number = 64; // 16:9 ratio. -> (16*layoutHeight) / 9 and then rounded to int
+        let layoutHeight: number = 36;
+        let layoutWidth: number = 64; // 16:9 ratio. -> (16*layoutHeight) / 9 and then rounded to int
 
         this._layoutsButtons = layouts.map((lay, ind) => {
-            const btn = new LayoutButton(
+            let btn = new LayoutButton(
                 this._layoutsBox,
                 lay,
                 hasGaps ? 2 : 0,
@@ -97,7 +97,7 @@ class LayoutsRow extends St.BoxLayout {
     }
 
     public selectLayout(selectedId: string) {
-        const selectedIndex = GlobalState.get().layouts.findIndex(
+        let selectedIndex = GlobalState.get().layouts.findIndex(
             (lay) => lay.id === selectedId,
         );
         this._layoutsButtons.forEach((btn, ind) =>
@@ -118,7 +118,7 @@ class LayoutsRow extends St.BoxLayout {
         if (!showMonitorName) this._label.hide();
         else this._label.show();
 
-        const details = monitorsDetails.find(
+        let details = monitorsDetails.find(
             (m) => m.x === this._monitor.x && m.y === this._monitor.y,
         );
         if (!details) return;
@@ -140,7 +140,7 @@ export default class DefaultMenu implements CurrentMenu {
         this._indicator = indicator;
         this._signals = new SignalHandling();
         this._children = [];
-        const layoutsPopupMenu = new PopupMenu.PopupBaseMenuItem({
+        let layoutsPopupMenu = new PopupMenu.PopupBaseMenuItem({
             style_class: 'indicator-menu-item',
         });
         this._children.push(layoutsPopupMenu);
@@ -158,10 +158,10 @@ export default class DefaultMenu implements CurrentMenu {
         );
 
         if (enableScalingFactor) {
-            const monitor = Main.layoutManager.findMonitorForActor(
+            let monitor = Main.layoutManager.findMonitorForActor(
                 this._container,
             );
-            const scalingFactor = getMonitorScalingFactor(
+            let scalingFactor = getMonitorScalingFactor(
                 monitor?.index || Main.layoutManager.primaryIndex,
             );
             enableScalingFactorSupport(this._container, scalingFactor);
@@ -191,11 +191,11 @@ export default class DefaultMenu implements CurrentMenu {
                 if (this._layoutsRows.length !== getMonitors().length)
                     this._drawLayouts();
 
-                const selected_layouts = Settings.get_selected_layouts();
-                const wsIndex =
+                let selected_layouts = Settings.get_selected_layouts();
+                let wsIndex =
                     global.workspaceManager.get_active_workspace_index();
                 getMonitors().forEach((m, index) => {
-                    const selectedId =
+                    let selectedId =
                         wsIndex < selected_layouts.length
                             ? selected_layouts[wsIndex][index]
                             : GlobalState.get().layouts[0].id;
@@ -208,11 +208,11 @@ export default class DefaultMenu implements CurrentMenu {
             global.workspaceManager,
             'active-workspace-changed',
             () => {
-                const selected_layouts = Settings.get_selected_layouts();
-                const wsIndex =
+                let selected_layouts = Settings.get_selected_layouts();
+                let wsIndex =
                     global.workspaceManager.get_active_workspace_index();
                 getMonitors().forEach((m, index) => {
-                    const selectedId =
+                    let selectedId =
                         wsIndex < selected_layouts.length
                             ? selected_layouts[wsIndex][index]
                             : GlobalState.get().layouts[0].id;
@@ -224,10 +224,10 @@ export default class DefaultMenu implements CurrentMenu {
         this._signals.connect(Main.layoutManager, 'monitors-changed', () => {
             if (!enableScalingFactor) return;
 
-            const monitor = Main.layoutManager.findMonitorForActor(
+            let monitor = Main.layoutManager.findMonitorForActor(
                 this._container,
             );
-            const scalingFactor = getMonitorScalingFactor(
+            let scalingFactor = getMonitorScalingFactor(
                 monitor?.index || Main.layoutManager.primaryIndex,
             );
             enableScalingFactorSupport(this._container, scalingFactor);
@@ -243,7 +243,7 @@ export default class DefaultMenu implements CurrentMenu {
         // compute monitors details and update labels asynchronously (if we have successful results...)
         this._computeMonitorsDetails();
 
-        const buttonsPopupMenu = this._buildEditingButtonsRow();
+        let buttonsPopupMenu = this._buildEditingButtonsRow();
         (this._indicator.menu as PopupMenu.PopupMenu).addMenuItem(
             buttonsPopupMenu,
         );
@@ -261,7 +261,7 @@ export default class DefaultMenu implements CurrentMenu {
             // Since Gdk.Monitor has monitor's name but we can't import Gdk into gnome-shell, we run a gjs code in a subprocess.
             // This code will just get all the monitors, printing into JSON format to stdout each monitor's name and geometry.
             // If we are successfull, we parse the stdout of the subprocess and update monitor's name
-            const proc = Gio.Subprocess.new(
+            let proc = Gio.Subprocess.new(
                 ['gjs', '-m', `${this._indicator.path}/monitorDescription.js`],
                 Gio.SubprocessFlags.STDOUT_PIPE |
                     Gio.SubprocessFlags.STDERR_PIPE,
@@ -273,10 +273,10 @@ export default class DefaultMenu implements CurrentMenu {
                 (pr: Gio.Subprocess | null, res: Gio.AsyncResult) => {
                     if (!pr) return;
 
-                    const [, stdout, stderr] = pr.communicate_utf8_finish(res);
+                    let [, stdout, stderr] = pr.communicate_utf8_finish(res);
                     if (pr.get_successful()) {
                         debug(stdout);
-                        const monitorsDetails = JSON.parse(stdout);
+                        let monitorsDetails = JSON.parse(stdout);
                         this._layoutsRows.forEach((lr) =>
                             lr.updateMonitorName(true, monitorsDetails),
                         );
@@ -291,7 +291,7 @@ export default class DefaultMenu implements CurrentMenu {
     }
 
     private _updateScaling() {
-        const newScalingFactor = getScalingFactorOf(this._container)[1];
+        let newScalingFactor = getScalingFactorOf(this._container)[1];
         if (this._scalingFactor === newScalingFactor) return;
 
         this._scalingFactor = newScalingFactor;
@@ -299,7 +299,7 @@ export default class DefaultMenu implements CurrentMenu {
     }
 
     private _buildEditingButtonsRow() {
-        const buttonsBoxLayout = new St.BoxLayout({
+        let buttonsBoxLayout = new St.BoxLayout({
             xAlign: Clutter.ActorAlign.CENTER,
             yAlign: Clutter.ActorAlign.CENTER,
             xExpand: true,
@@ -307,7 +307,7 @@ export default class DefaultMenu implements CurrentMenu {
             styleClass: 'buttons-box-layout',
         });
 
-        const editLayoutsBtn = IndicatorUtils.createButton(
+        let editLayoutsBtn = IndicatorUtils.createButton(
             'edit-symbolic',
             `${_('Edit Layouts')}...`,
             this._indicator.path,
@@ -316,7 +316,7 @@ export default class DefaultMenu implements CurrentMenu {
             this._indicator.openLayoutEditor(),
         );
         buttonsBoxLayout.add_child(editLayoutsBtn);
-        const newLayoutBtn = IndicatorUtils.createButton(
+        let newLayoutBtn = IndicatorUtils.createButton(
             'add-symbolic',
             `${_('New Layout')}...`,
             this._indicator.path,
@@ -326,7 +326,7 @@ export default class DefaultMenu implements CurrentMenu {
         );
         buttonsBoxLayout.add_child(newLayoutBtn);
 
-        const prefsBtn = IndicatorUtils.createIconButton(
+        let prefsBtn = IndicatorUtils.createIconButton(
             'prefs-symbolic',
             this._indicator.path,
         );
@@ -336,7 +336,7 @@ export default class DefaultMenu implements CurrentMenu {
         });
         buttonsBoxLayout.add_child(prefsBtn);
 
-        const buttonsPopupMenu = new PopupMenu.PopupBaseMenuItem({
+        let buttonsPopupMenu = new PopupMenu.PopupBaseMenuItem({
             style_class: 'indicator-menu-item',
         });
         buttonsPopupMenu.add_child(buttonsBoxLayout);
@@ -345,23 +345,23 @@ export default class DefaultMenu implements CurrentMenu {
     }
 
     private _drawLayouts() {
-        const layouts = GlobalState.get().layouts;
+        let layouts = GlobalState.get().layouts;
         this._container.destroy_all_children();
         this._layoutsRows = [];
 
-        const selected_layouts = Settings.get_selected_layouts();
-        const ws_index = global.workspaceManager.get_active_workspace_index();
-        const monitors = getMonitors();
+        let selected_layouts = Settings.get_selected_layouts();
+        let ws_index = global.workspaceManager.get_active_workspace_index();
+        let monitors = getMonitors();
         this._layoutsRows = monitors.map((monitor) => {
-            const ws_selected_layouts =
+            let ws_selected_layouts =
                 ws_index < selected_layouts.length
                     ? selected_layouts[ws_index]
                     : [];
-            const selectedId =
+            let selectedId =
                 monitor.index < ws_selected_layouts.length
                     ? ws_selected_layouts[monitor.index]
                     : GlobalState.get().layouts[0].id;
-            const row = new LayoutsRow(
+            let row = new LayoutsRow(
                 this._container,
                 layouts,
                 selectedId,
