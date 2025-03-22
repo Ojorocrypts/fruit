@@ -3,7 +3,7 @@ import { logger } from '@utils/logger';
 import SignalHandling from '@utils/signalHandling';
 import { GObject, Meta, Mtk, Clutter, Graphene } from '@gi.ext';
 
-const debug = logger('TilingShellWindowManager');
+let debug = logger('TilingShellWindowManager');
 
 class CachedWindowProperties {
     private _is_initialized: boolean = false;
@@ -15,7 +15,7 @@ class CachedWindowProperties {
     }
 
     public update(window: Meta.Window, manager: TilingShellWindowManager) {
-        const newMaximized =
+        let newMaximized =
             window.maximizedVertically && window.maximizedHorizontally;
         if (this._is_initialized && this.maximized && !newMaximized)
             manager.emit('unmaximized', window);
@@ -124,17 +124,17 @@ export default class TilingShellWindowManager extends GObject.Object {
         duration: number;
         monitorIndex?: number;
     }): void {
-        const winActor =
+        let winActor =
             params.window.get_compositor_private() as Meta.WindowActor;
         if (!winActor) return;
 
         // create a clone and hide the window actor
         // then we can change the actual window size
         // without showing that to the user
-        const winRect = params.window.get_frame_rect();
-        const xExcludingShadow = winRect.x - winActor.get_x();
-        const yExcludingShadow = winRect.y - winActor.get_y();
-        const staticClone = new Clutter.Clone({
+        let winRect = params.window.get_frame_rect();
+        let xExcludingShadow = winRect.x - winActor.get_x();
+        let yExcludingShadow = winRect.y - winActor.get_y();
+        let staticClone = new Clutter.Clone({
             source: winActor,
             reactive: false,
             scale_x: 1,
@@ -164,7 +164,7 @@ export default class TilingShellWindowManager extends GObject.Object {
         winActor.set_pivot_point(0, 0);
         winActor.set_position(params.to.x, params.to.y);
         winActor.set_size(params.to.width, params.to.height);
-        const user_op = false;
+        let user_op = false;
         if (params.monitorIndex)
             params.window.move_to_monitor(params.monitorIndex);
         params.window.move_frame(user_op, params.to.x, params.to.y);
