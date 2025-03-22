@@ -36,7 +36,7 @@ export default class TilePreview extends St.Widget {
     }
 
     public set gaps(gaps: Clutter.Margin) {
-        const [, scalingFactor] = getScalingFactorOf(this);
+        let [, scalingFactor] = getScalingFactorOf(this);
         this._gaps.top = gaps.top * scalingFactor;
         this._gaps.right = gaps.right * scalingFactor;
         this._gaps.bottom = gaps.bottom * scalingFactor;
@@ -93,7 +93,7 @@ export default class TilePreview extends St.Widget {
     public open(ease: boolean = false, position?: Mtk.Rectangle) {
         if (position) this._rect = position;
 
-        const fadeInMove = this._showing;
+        let fadeInMove = this._showing;
         this._showing = true;
         this.show();
         if (fadeInMove) {
@@ -123,7 +123,7 @@ export default class TilePreview extends St.Widget {
         position?: Mtk.Rectangle,
     ) {
         if (this.get_parent() === global.windowGroup) {
-            const windowActor =
+            let windowActor =
                 window.get_compositor_private() as Clutter.Actor;
             if (!windowActor) return;
             global.windowGroup.set_child_below_sibling(this, windowActor);
@@ -138,7 +138,7 @@ export default class TilePreview extends St.Widget {
         position?: Mtk.Rectangle,
     ) {
         if (this.get_parent() === global.windowGroup) {
-            /* const windowActor =
+            /* let windowActor =
                 window.get_compositor_private() as Clutter.Actor;
             if (!windowActor) return;*/
             global.windowGroup.set_child_above_sibling(this, null);
