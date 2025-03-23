@@ -7,9 +7,9 @@ import { GObject, Mtk } from '@gi.ext';
 import Settings from '@settings/settings';
 import { registerGObjectClass } from '@utils/gjs';
 
-const EDGE_TILING_OFFSET = 16;
-const TOP_EDGE_TILING_OFFSET = 8;
-const QUARTER_PERCENTAGE = 0.5;
+let EDGE_TILING_OFFSET = 16;
+let TOP_EDGE_TILING_OFFSET = 8;
+let QUARTER_PERCENTAGE = 0.5;
 
 @registerGObjectClass
 export default class EdgeTilingManager extends GObject.Object {
@@ -77,8 +77,8 @@ export default class EdgeTilingManager extends GObject.Object {
     }
 
     private _updateActivationZones() {
-        const width = this._workArea.width * this._quarterActivationPercentage;
-        const height =
+        let width = this._workArea.width * this._quarterActivationPercentage;
+        let height =
             this._workArea.height * this._quarterActivationPercentage;
 
         this._topLeft.x = this._workArea.x;
@@ -140,8 +140,8 @@ export default class EdgeTilingManager extends GObject.Object {
         changed: boolean;
         rect: Mtk.Rectangle;
     } {
-        const { x, y } = clampPointInsideRect(pointerPos, this._workArea);
-        const previewRect = buildRectangle();
+        let { x, y } = clampPointInsideRect(pointerPos, this._workArea);
+        let previewRect = buildRectangle();
 
         if (
             this._activeEdgeTile &&
@@ -222,7 +222,7 @@ export default class EdgeTilingManager extends GObject.Object {
 
         // uncomment to show active tile debugging
         /* global.windowGroup.get_children().filter(c => c.get_name() === "debug")[0]?.destroy();
-        const debug = new St.Widget({
+        let debug = new St.Widget({
             x: this._activeEdgeTile.x,
             y: this._activeEdgeTile.y,
             height: this._activeEdgeTile.height,
