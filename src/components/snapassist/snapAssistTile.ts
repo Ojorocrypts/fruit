@@ -17,19 +17,19 @@ export default class SnapAssistTile extends TilePreview {
         super({ parent: params.parent, rect: params.rect, gaps: params.gaps });
         this._tile = params.tile;
 
-        let isLeft = this._tile.x <= 0.001;
-        let isTop = this._tile.y <= 0.001;
-        let isRight = this._tile.x + this._tile.width >= 0.99;
-        let isBottom = this._tile.y + this._tile.height >= 0.99;
+        const isLeft = this._tile.x <= 0.001;
+        const isTop = this._tile.y <= 0.001;
+        const isRight = this._tile.x + this._tile.width >= 0.99;
+        const isBottom = this._tile.y + this._tile.height >= 0.99;
 
-        let [alreadyScaled, scalingFactor] = getScalingFactorOf(this);
+        const [alreadyScaled, scalingFactor] = getScalingFactorOf(this);
         // the value got is already scaled if the tile is on primary monitor
-        let radiusValue =
+        const radiusValue =
             (alreadyScaled ? 1 : scalingFactor) *
             (this.get_theme_node().get_length('border-radius-value') /
                 (alreadyScaled ? scalingFactor : 1));
         // top-left top-right bottom-right bottom-left
-        let radius = [2, 2, 2, 2];
+        const radius = [2, 2, 2, 2];
         if (isTop && isLeft) radius[St.Corner.TOPLEFT] = radiusValue;
         if (isTop && isRight) radius[St.Corner.TOPRIGHT] = radiusValue;
         if (isBottom && isRight) radius[St.Corner.BOTTOMRIGHT] = radiusValue;
@@ -54,7 +54,7 @@ export default class SnapAssistTile extends TilePreview {
 
     _applyStyle() {
         // the tile will be light or dark, following the text color
-        let [hasColor, { red, green, blue }] =
+        const [hasColor, { red, green, blue }] =
             this.get_theme_node().lookup_color('color', true);
         if (!hasColor) return;
         // if the text color is light, apply light theme, otherwise apply dark theme
